@@ -157,8 +157,13 @@ function Contact() {
                 autoComplete="off"
               />
             </label>
-            <button type="submit" disabled={submitState === "submitting"}>
-              {submitState === "submitting" ? "Sending..." : "Send ticket"}
+            <button className="ticket-submit-button" type="submit" disabled={submitState === "submitting"}>
+              <span className="ticket-submit-text">
+                {submitState === "submitting" ? "Sending..." : "Send ticket"}
+              </span>
+              <span className="ticket-submit-signal" aria-hidden="true">
+                -&gt;
+              </span>
             </button>
             {feedback && (
               <p
