@@ -1,24 +1,24 @@
 import heroPortrait from "../assets/images/atila-portrait-hero.jpg";
 
 const metadata = [
-  ["Location", "Tabriz, Iran"],
-  ["Focus", "Backend Development"],
-  ["Stack", "Python / Django / React"],
-  ["Started", "3+ years ago"],
+  ["From", "Tabriz, Iran"],
+  ["Direction", "Economics and evidence"],
+  ["Tools", "Python / Django / React"],
+  ["Curious About", "Markets, AI, culture"],
 ];
 
 function Hero() {
   return (
     <section className="hero section-shell" id="top" aria-labelledby="hero-title">
       <div className="hero-copy">
-        <p className="eyebrow">Personal portfolio / backend developer</p>
+        <p className="eyebrow">Personal portfolio / economics, computing, curiosity</p>
         <h1 id="hero-title">
-          Atila Hatefi &mdash; backend-focused developer building clean,
-          functional web experiences.
+          I study systems, decisions, and the evidence behind them.
         </h1>
         <p className="hero-subtitle">
-          19-year-old developer from Tabriz, Iran, working mainly with Python,
-          Django, React, and modern web technologies.
+          I am Atila Hatefi, a student from Tabriz interested in Economics,
+          quantitative thinking, programming, technology, sports, music, and the
+          way people make decisions under uncertainty.
         </p>
       </div>
 

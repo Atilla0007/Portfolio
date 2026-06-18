@@ -43,3 +43,7 @@ export function safeMediaUrl(value, options) {
 export function safeCertificateHref(value, options) {
   return normalizeUrl(value, { allowHttp: true, ...options });
 }
+
+export function safeExternalUrl(value, options) {
+  return normalizeUrl(value, { allowHttp: true, ...options });
+}

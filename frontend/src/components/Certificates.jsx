@@ -17,6 +17,13 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+function formatAchievementDate(certificate) {
+  if (certificate.year) {
+    return certificate.year;
+  }
+  return formatDate(certificate.date);
+}
+
 function Certificates() {
   const [certificates, setCertificates] = useState([]);
   const [status, setStatus] = useState("loading");
@@ -56,29 +63,29 @@ function Certificates() {
 
   return (
     <section className="certificates section-shell section-grid" id="certificates">
-      <div className="section-kicker">(02) Certificates</div>
+      <div className="section-kicker">(02) Achievements & Learning</div>
 
       <div className="section-content">
         <div className="section-heading-row">
-          <h2>Certificates / achievements</h2>
-          <span>Selected proof of work</span>
+          <h2>Achievements & Learning</h2>
+          <span>Evidence, discipline, and development</span>
         </div>
 
         {status === "loading" && (
           <div className="state-line" role="status">
-            Loading certificates...
+            Loading achievements...
           </div>
         )}
 
         {status === "error" && (
           <div className="state-line state-line-error" role="alert">
-            Certificates could not load. {errorMessage}
+            Achievements could not load. {errorMessage}
           </div>
         )}
 
         {status === "success" && certificates.length === 0 && (
           <div className="state-line">
-            Certificates will appear here after they are added in Django admin.
+            Achievements will appear here after they are added in Django admin.
           </div>
         )}
 
@@ -102,13 +109,49 @@ function Certificates() {
 
                   <div className="certificate-body">
                     <div className="certificate-meta">
-                      <span>{certificate.issuer}</span>
+                      <span>{certificate.category_display || certificate.category}</span>
                       <time dateTime={certificate.date || undefined}>
-                        {formatDate(certificate.date)}
+                        {formatAchievementDate(certificate)}
                       </time>
                     </div>
                     <h3>{certificate.title}</h3>
+                    <dl className="achievement-facts">
+                      <div>
+                        <dt>Institution</dt>
+                        <dd>{certificate.issuer}</dd>
+                      </div>
+                      {certificate.duration_hours && (
+                        <div>
+                          <dt>Duration</dt>
+                          <dd>{certificate.duration_hours} hours</dd>
+                        </div>
+                      )}
+                      {certificate.score_display && (
+                        <div>
+                          <dt>Score</dt>
+                          <dd>{certificate.score_display}</dd>
+                        </div>
+                      )}
+                      {certificate.result_display && (
+                        <div>
+                          <dt>Result</dt>
+                          <dd>{certificate.result_display}</dd>
+                        </div>
+                      )}
+                    </dl>
                     {certificate.description && <p>{certificate.description}</p>}
+                    {certificate.learning_outcome && (
+                      <div className="achievement-note">
+                        <strong>What I learned</strong>
+                        <p>{certificate.learning_outcome}</p>
+                      </div>
+                    )}
+                    {certificate.academic_connection && (
+                      <div className="achievement-note">
+                        <strong>How it connects</strong>
+                        <p>{certificate.academic_connection}</p>
+                      </div>
+                    )}
 
                     {renderHref && (
                       <a className="text-button" href={renderHref} target="_blank" rel="noopener noreferrer">

@@ -3,12 +3,13 @@ from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import IntegrityError
 from django.test import TestCase, override_settings
 from PIL import Image
 
 from portfolio.serializers import CertificateSerializer
 
-from .models import Certificate
+from .models import BlogPost, BlogSource, Certificate
 from .validators import MAX_CERTIFICATE_FILE_SIZE
 
 
@@ -58,13 +59,50 @@ class CertificateApiTests(TestCase):
                 "title",
                 "issuer",
                 "description",
+                "category",
+                "category_display",
                 "date",
+                "year",
+                "duration_hours",
+                "score_display",
+                "result_display",
+                "learning_outcome",
+                "academic_connection",
                 "image_url",
                 "file_url",
                 "external_url",
                 "order",
+                "featured",
             },
         )
+
+    def test_new_public_achievement_fields_are_serialized(self):
+        Certificate.objects.create(
+            title="Python Programming",
+            issuer="Training Organization",
+            category=Certificate.Category.TECHNICAL,
+            year=2024,
+            duration_hours=110,
+            score_display="88/100",
+            result_display="Completed vocational training",
+            learning_outcome="Learned logical problem decomposition.",
+            academic_connection="Supports econometrics preparation.",
+            featured=True,
+        )
+
+        response = self.client.get("/api/certificates/")
+
+        self.assertEqual(response.status_code, 200)
+        item = response.json()[0]
+        self.assertEqual(item["category"], "technical")
+        self.assertEqual(item["category_display"], "Technical Learning")
+        self.assertEqual(item["year"], 2024)
+        self.assertEqual(item["duration_hours"], 110)
+        self.assertEqual(item["score_display"], "88/100")
+        self.assertEqual(item["result_display"], "Completed vocational training")
+        self.assertEqual(item["learning_outcome"], "Learned logical problem decomposition.")
+        self.assertEqual(item["academic_connection"], "Supports econometrics preparation.")
+        self.assertTrue(item["featured"])
 
 
 class CertificateValidationTests(TestCase):
@@ -110,6 +148,122 @@ class CertificateValidationTests(TestCase):
         certificate = Certificate(title="Image", issuer="Atila", image=image_upload())
 
         certificate.full_clean()
+
+
+class BlogApiTests(TestCase):
+    def test_only_published_posts_are_listed(self):
+        BlogPost.objects.create(
+            title="Published",
+            slug="published",
+            category="Economics",
+            excerpt="Published excerpt",
+            body="Published body",
+            seo_title="Published SEO",
+            meta_description="Published meta",
+            is_published=True,
+        )
+        BlogPost.objects.create(
+            title="Draft",
+            slug="draft",
+            category="Economics",
+            excerpt="Draft excerpt",
+            body="Draft body",
+            seo_title="Draft SEO",
+            meta_description="Draft meta",
+            is_published=False,
+        )
+
+        response = self.client.get("/api/blog/")
+
+        self.assertEqual(response.status_code, 200)
+        slugs = {item["slug"] for item in response.json()}
+        self.assertIn("published", slugs)
+        self.assertNotIn("draft", slugs)
+
+    def test_draft_detail_returns_404(self):
+        BlogPost.objects.create(
+            title="Draft",
+            slug="draft",
+            category="Economics",
+            excerpt="Draft excerpt",
+            body="Draft body",
+            seo_title="Draft SEO",
+            meta_description="Draft meta",
+            is_published=False,
+        )
+
+        response = self.client.get("/api/blog/draft/")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_anonymous_blog_writes_are_rejected(self):
+        for method in ("post", "put", "patch", "delete"):
+            with self.subTest(method=method):
+                response = getattr(self.client, method)("/api/blog/")
+                self.assertIn(response.status_code, {401, 403, 405})
+
+    def test_duplicate_slugs_are_prevented(self):
+        BlogPost.objects.create(
+            title="First",
+            slug="same-slug",
+            category="Economics",
+            excerpt="First excerpt",
+            body="First body",
+            seo_title="First SEO",
+            meta_description="First meta",
+        )
+
+        with self.assertRaises(IntegrityError):
+            BlogPost.objects.create(
+                title="Second",
+                slug="same-slug",
+                category="Economics",
+                excerpt="Second excerpt",
+                body="Second body",
+                seo_title="Second SEO",
+                meta_description="Second meta",
+            )
+
+    def test_unsafe_source_urls_are_rejected(self):
+        post = BlogPost.objects.create(
+            title="Post",
+            slug="post",
+            category="Economics",
+            excerpt="Excerpt",
+            body="Body",
+            seo_title="SEO",
+            meta_description="Meta",
+        )
+        source = BlogSource(post=post, label="Unsafe", url="javascript:alert(1)")
+
+        with self.assertRaises(ValidationError):
+            source.full_clean()
+
+    def test_detail_serializes_safe_structured_content(self):
+        post = BlogPost.objects.create(
+            title="Published",
+            slug="published",
+            category="Economics",
+            excerpt="Published excerpt",
+            body="## Heading\nBody paragraph",
+            key_takeaways="One\nTwo",
+            seo_title="Published SEO",
+            meta_description="Published meta",
+            is_published=True,
+        )
+        BlogSource.objects.create(
+            post=post,
+            label="Source",
+            url="https://example.com/source",
+        )
+
+        response = self.client.get("/api/blog/published/")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["body"], "## Heading\nBody paragraph")
+        self.assertEqual(data["key_takeaways"], ["One", "Two"])
+        self.assertEqual(data["sources"][0]["url"], "https://example.com/source")
 
 
 class HealthCheckTests(TestCase):

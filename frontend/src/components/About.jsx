@@ -1,8 +1,8 @@
 const pillars = [
-  ["01", "Backend Development"],
-  ["02", "Web Interfaces"],
-  ["03", "Problem Solving"],
-  ["04", "Sports & Discipline"],
+  ["01", "Direction", "Economics and quantitative analysis"],
+  ["02", "Foundation", "Mathematics and Physics"],
+  ["03", "Tools", "Python, Django, structured systems"],
+  ["04", "Perspective", "Tabriz, Türkiye, technology, culture"],
 ];
 
 function About() {
@@ -11,30 +11,37 @@ function About() {
       <div className="section-kicker">(01) About</div>
 
       <div className="section-content">
-        <h2>I build from logic outward.</h2>
+        <h2>Curiosity with structure behind it.</h2>
         <div className="about-copy">
           <p>
-            I&apos;m Atila Hatefi, a 19-year-old backend-focused developer from
-            Tabriz, Iran. My background started in mathematics and physics,
-            which shaped the way I think about systems, logic, and
-            problem-solving. I began learning programming three years ago with
-            Python, then expanded into HTML, CSS, JavaScript, React, Django, and
-            modern web development.
+            I am Atila Hatefi, a student from Tabriz interested in Economics,
+            quantitative thinking, and the way technology can help organise
+            evidence more carefully.
           </p>
           <p>
-            I&apos;m most interested in building clean backend systems,
-            practical web applications, and digital products that feel simple on
-            the surface but strong underneath. Outside programming, I&apos;m
-            into sports like basketball, tennis, eight-ball, and anything
-            competitive that keeps me sharp.
+            Growing up in a border city made economic change visible through
+            prices, exchange rates, trade, and everyday decisions. Mathematics
+            and physics trained me to think with precision, while programming
+            taught me to break problems into structure, test assumptions, and
+            build working systems. My interests are wider than one subject:
+            technology, artificial intelligence, sports, music, travel, and
+            strategy all shape how I learn and see the world.
           </p>
         </div>
 
+        <div className="about-links" aria-label="Personal portfolio links">
+          <a className="text-button" href="/why-economics">Read why Economics matters to me</a>
+          <a className="text-button" href="/study-and-skills">View study & skills</a>
+        </div>
+
         <ol className="studio-list" aria-label="Atila Hatefi focus areas">
-          {pillars.map(([number, label]) => (
+          {pillars.map(([number, label, value]) => (
             <li key={number}>
               <span>({number})</span>
-              <strong>{label}</strong>
+              <div>
+                <strong>{label}</strong>
+                <small>{value}</small>
+              </div>
             </li>
           ))}
         </ol>

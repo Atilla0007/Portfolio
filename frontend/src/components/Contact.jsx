@@ -14,10 +14,9 @@ const initialTicket = {
 };
 
 const links = [
-  ["Email", "hello@atilahatefi.dev", "mailto:hello@atilahatefi.dev"],
-  ["GitHub", "github.com/atilahatefi", "https://github.com/atilahatefi"],
-  ["LinkedIn", "linkedin.com/in/atilahatefi", "https://www.linkedin.com/in/atilahatefi"],
-  ["Instagram", "@atilahatefi", "https://www.instagram.com/atilahatefi"],
+  ["Email", "atilahatefi70@gmail.com", "mailto:atilahatefi70@gmail.com"],
+  ["GitHub", "github.com/Atilla0007", "https://github.com/Atilla0007"],
+  ["Instagram", "@atilahtf", "https://www.instagram.com/atilahtf"],
 ];
 
 function errorFromResponse(data) {

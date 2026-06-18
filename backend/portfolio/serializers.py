@@ -2,7 +2,7 @@ import re
 
 from rest_framework import serializers
 
-from .models import Certificate, ContactTicket
+from .models import BlogPost, BlogSource, Certificate, ContactTicket
 
 
 class CertificateSerializer(serializers.ModelSerializer):
@@ -16,12 +16,23 @@ class CertificateSerializer(serializers.ModelSerializer):
             "title",
             "issuer",
             "description",
+            "category",
+            "category_display",
             "date",
+            "year",
+            "duration_hours",
+            "score_display",
+            "result_display",
+            "learning_outcome",
+            "academic_connection",
             "image_url",
             "file_url",
             "external_url",
             "order",
+            "featured",
         )
+
+    category_display = serializers.CharField(source="get_category_display", read_only=True)
 
     def get_image_url(self, obj):
         return self._absolute_media_url(obj.image)
@@ -38,6 +49,47 @@ class CertificateSerializer(serializers.ModelSerializer):
         if request:
             return request.build_absolute_uri(url)
         return url
+
+
+class BlogSourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogSource
+        fields = ("label", "url", "order")
+
+
+class BlogPostListSerializer(serializers.ModelSerializer):
+    sources = BlogSourceSerializer(many=True, read_only=True)
+    key_takeaways = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BlogPost
+        fields = (
+            "id",
+            "title",
+            "slug",
+            "category",
+            "excerpt",
+            "published_at",
+            "estimated_reading_time",
+            "seo_title",
+            "meta_description",
+            "featured",
+            "order",
+            "key_takeaways",
+            "sources",
+        )
+
+    def get_key_takeaways(self, obj):
+        return _lines(obj.key_takeaways)
+
+
+class BlogPostDetailSerializer(BlogPostListSerializer):
+    class Meta(BlogPostListSerializer.Meta):
+        fields = BlogPostListSerializer.Meta.fields + ("body",)
+
+
+def _lines(value):
+    return [line.strip() for line in value.splitlines() if line.strip()]
 
 
 CONTROL_CHAR_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
