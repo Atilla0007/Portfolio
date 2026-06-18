@@ -12,7 +12,7 @@ const footerLinks = [
 
 const pageMeta = {
   home: {
-    title: "Atila Hatefi | Economics, Computing, and Curiosity",
+    title: "Atila Hatefi | Personal Portfolio",
     description:
       "Personal portfolio of Atila Hatefi, connecting Economics, mathematics, programming, sports, culture, and careful thinking.",
     path: "/",
