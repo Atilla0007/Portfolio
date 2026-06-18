@@ -183,6 +183,28 @@ DJANGO_USE_MANIFEST_STATICFILES=True
 VITE_API_BASE_URL=
 ```
 
+If cPanel does not pass environment variables reliably to Passenger, create a
+private `backend/.env` file on the server with the same values. This file is
+ignored by Git:
+
+```bash
+cat > ~/Portfolio/backend/.env <<'EOF'
+DJANGO_DEBUG=False
+DJANGO_SECRET_KEY=replace-with-a-long-random-secret
+DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir
+DJANGO_CSRF_TRUSTED_ORIGINS=https://atilahatefi.ir,https://www.atilahatefi.ir
+DJANGO_CORS_ALLOWED_ORIGINS=
+DATABASE_URL=sqlite:////home/styrair/Portfolio/backend/db.sqlite3
+DJANGO_MEDIA_ROOT=/home/styrair/Portfolio/backend/media
+FRONTEND_DIST_DIR=/home/styrair/Portfolio/frontend/dist
+DJANGO_SECURE_SSL_REDIRECT=False
+DJANGO_USE_X_FORWARDED_PROTO=True
+DJANGO_ENABLE_WHITENOISE=True
+DJANGO_USE_MANIFEST_STATICFILES=True
+EOF
+chmod 600 ~/Portfolio/backend/.env
+```
+
 After changing environment variables, click **Restart** in cPanel's Python app.
 Verify with:
 
@@ -190,6 +212,15 @@ Verify with:
 curl -I https://atilahatefi.ir/
 curl -I https://atilahatefi.ir/health/
 curl https://atilahatefi.ir/api/blog/
+```
+
+Do not copy `frontend/dist` into `public_html` for this setup. The Python app
+serves `frontend/dist` directly. If Passenger shows "Web application could not
+be started", check the generated startup log:
+
+```bash
+cat ~/Portfolio/backend/passenger_startup_error.log
+zgrep -a -n -C 25 "Error ID" ~/logs/*.gz 2>/dev/null
 ```
 
 For VPS deployment, a traditional setup still works:
