@@ -148,6 +148,10 @@ WHITENOISE_MAX_AGE = env_int("DJANGO_WHITENOISE_MAX_AGE", 31536000 if not DEBUG 
 
 MEDIA_URL = os.environ.get("DJANGO_MEDIA_URL", "/media/")
 MEDIA_ROOT = Path(os.environ.get("DJANGO_MEDIA_ROOT", BASE_DIR / "media"))
+FRONTEND_DIST_DIR = Path(
+    os.environ.get("FRONTEND_DIST_DIR", BASE_DIR.parent / "frontend" / "dist")
+)
+FRONTEND_ASSET_MAX_AGE = env_int("FRONTEND_ASSET_MAX_AGE", 31536000)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

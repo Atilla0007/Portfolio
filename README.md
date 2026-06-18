@@ -121,18 +121,78 @@ semgrep scan --config p/default --metrics=off .
 
 ## Production Deployment
 
-Use a traditional host/VPS setup without Docker:
+The simplest cPanel deployment is a single Django Python app on `atilahatefi.ir`.
+Django serves the built React files from `frontend/dist`, and also serves the API,
+admin, health check, and uploaded media:
 
 ```text
-https://atilahatefi.ir/                React build from frontend/dist
-https://atilahatefi.ir/api/            Django API through Gunicorn
-https://atilahatefi.ir/go-to-settings/ Django admin through Gunicorn
+https://atilahatefi.ir/                React portfolio served by Django
+https://atilahatefi.ir/cv              React client route served by Django
+https://atilahatefi.ir/api/            Django API
+https://atilahatefi.ir/go-to-settings/ Django admin
 https://atilahatefi.ir/health/         Django health endpoint
-https://atilahatefi.ir/static/         collected Django static files
+https://atilahatefi.ir/static/         collected Django/admin static files
+https://atilahatefi.ir/assets/         Vite build assets from frontend/dist
 https://atilahatefi.ir/media/          uploaded media
 ```
 
-Recommended production stack:
+For cPanel, create one Python app:
+
+```text
+Application root: Portfolio/backend
+Application URL: atilahatefi.ir
+Startup file: passenger_wsgi.py
+Application entry point: application
+```
+
+Build the frontend before restarting the Python app:
+
+```bash
+cd ~/Portfolio
+git pull origin main
+
+cd frontend
+source /home/styrair/nodevenv/Portfolio/frontend/22/bin/activate
+npm install
+npm run build
+
+cd ../backend
+source /home/styrair/virtualenv/Portfolio/backend/3.11/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r ../requirements.txt
+python manage.py migrate
+python manage.py collectstatic --noinput
+python manage.py check
+```
+
+Use these cPanel Python app environment variables, replacing the secret:
+
+```env
+DJANGO_DEBUG=False
+DJANGO_SECRET_KEY=replace-with-a-long-random-secret
+DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir
+DJANGO_CSRF_TRUSTED_ORIGINS=https://atilahatefi.ir,https://www.atilahatefi.ir
+DJANGO_CORS_ALLOWED_ORIGINS=
+DATABASE_URL=sqlite:////home/styrair/Portfolio/backend/db.sqlite3
+DJANGO_MEDIA_ROOT=/home/styrair/Portfolio/backend/media
+FRONTEND_DIST_DIR=/home/styrair/Portfolio/frontend/dist
+DJANGO_SECURE_SSL_REDIRECT=False
+DJANGO_USE_X_FORWARDED_PROTO=True
+DJANGO_ENABLE_WHITENOISE=True
+DJANGO_USE_MANIFEST_STATICFILES=True
+VITE_API_BASE_URL=
+```
+
+After changing environment variables, click **Restart** in cPanel's Python app.
+Verify with:
+
+```bash
+curl -I https://atilahatefi.ir/
+curl -I https://atilahatefi.ir/health/
+curl https://atilahatefi.ir/api/blog/
+```
+
+For VPS deployment, a traditional setup still works:
 
 - PostgreSQL
 - Gunicorn serving `portfolio_backend.wsgi:application`

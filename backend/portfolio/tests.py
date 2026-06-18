@@ -1,4 +1,6 @@
 from io import BytesIO
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
@@ -292,6 +294,54 @@ class AdminRouteTests(TestCase):
 
     def test_old_admin_url_is_not_mounted(self):
         response = self.client.get("/admin/")
+
+        self.assertEqual(response.status_code, 404)
+
+
+class FrontendServingTests(TestCase):
+    def test_frontend_index_serves_home_and_client_routes(self):
+        with TemporaryDirectory() as directory:
+            dist_dir = Path(directory)
+            (dist_dir / "index.html").write_text("<div id=\"root\">app-shell</div>", encoding="utf-8")
+
+            with override_settings(FRONTEND_DIST_DIR=dist_dir):
+                for path in ("/", "/cv", "/why-economics"):
+                    with self.subTest(path=path):
+                        response = self.client.get(path)
+
+                        self.assertEqual(response.status_code, 200)
+                        self.assertEqual(response["Cache-Control"], "no-cache")
+                        self.assertIn(b"app-shell", b"".join(response.streaming_content))
+
+    def test_frontend_asset_serves_built_files_with_cache_header(self):
+        with TemporaryDirectory() as directory:
+            dist_dir = Path(directory)
+            assets_dir = dist_dir / "assets"
+            assets_dir.mkdir()
+            (assets_dir / "index.js").write_text("console.log('portfolio')", encoding="utf-8")
+
+            with override_settings(FRONTEND_DIST_DIR=dist_dir, FRONTEND_ASSET_MAX_AGE=60):
+                response = self.client.get("/assets/index.js")
+
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response["Cache-Control"], "public, max-age=60, immutable")
+                self.assertIn(b"portfolio", b"".join(response.streaming_content))
+
+    def test_missing_frontend_build_returns_clear_error(self):
+        with TemporaryDirectory() as directory:
+            with override_settings(FRONTEND_DIST_DIR=Path(directory)):
+                response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 503)
+        self.assertContains(response, "Frontend build is missing", status_code=503)
+
+    def test_backend_prefixes_do_not_fall_through_to_frontend(self):
+        with TemporaryDirectory() as directory:
+            dist_dir = Path(directory)
+            (dist_dir / "index.html").write_text("<div id=\"root\">app-shell</div>", encoding="utf-8")
+
+            with override_settings(FRONTEND_DIST_DIR=dist_dir):
+                response = self.client.get("/api/not-real/")
 
         self.assertEqual(response.status_code, 404)
 
