@@ -358,3 +358,9 @@ class SettingsHelperTests(TestCase):
 
         with patch.dict("os.environ", {"PORTFOLIO_TEST_LIST": "one, two,, "}):
             self.assertEqual(env_list("PORTFOLIO_TEST_LIST"), ["one", "two"])
+
+    def test_project_domain_is_allowed_by_default(self):
+        from django.conf import settings
+
+        self.assertIn("atilahatefi.ir", settings.ALLOWED_HOSTS)
+        self.assertIn(".atilahatefi.ir", settings.ALLOWED_HOSTS)

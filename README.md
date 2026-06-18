@@ -69,7 +69,8 @@ Production must use real secret values outside Git. Start from `.env.production.
 ```env
 DJANGO_DEBUG=False
 DJANGO_SECRET_KEY=replace-with-a-real-secret
-DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir
+DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir,.atilahatefi.ir
+DJANGO_PROJECT_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir,.atilahatefi.ir
 DJANGO_CSRF_TRUSTED_ORIGINS=https://atilahatefi.ir,https://www.atilahatefi.ir
 DJANGO_CORS_ALLOWED_ORIGINS=https://atilahatefi.ir,https://www.atilahatefi.ir
 DATABASE_URL=postgresql://portfolio:password@127.0.0.1:5432/portfolio
@@ -170,7 +171,8 @@ Use these cPanel Python app environment variables, replacing the secret:
 ```env
 DJANGO_DEBUG=False
 DJANGO_SECRET_KEY=replace-with-a-long-random-secret
-DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir
+DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir,.atilahatefi.ir
+DJANGO_PROJECT_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir,.atilahatefi.ir
 DJANGO_CSRF_TRUSTED_ORIGINS=https://atilahatefi.ir,https://www.atilahatefi.ir
 DJANGO_CORS_ALLOWED_ORIGINS=
 DATABASE_URL=sqlite:////home/styrair/Portfolio/backend/db.sqlite3
@@ -191,7 +193,8 @@ ignored by Git:
 cat > ~/Portfolio/backend/.env <<'EOF'
 DJANGO_DEBUG=False
 DJANGO_SECRET_KEY=replace-with-a-long-random-secret
-DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir
+DJANGO_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir,.atilahatefi.ir
+DJANGO_PROJECT_ALLOWED_HOSTS=atilahatefi.ir,www.atilahatefi.ir,.atilahatefi.ir
 DJANGO_CSRF_TRUSTED_ORIGINS=https://atilahatefi.ir,https://www.atilahatefi.ir
 DJANGO_CORS_ALLOWED_ORIGINS=
 DATABASE_URL=sqlite:////home/styrair/Portfolio/backend/db.sqlite3

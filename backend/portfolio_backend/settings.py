@@ -30,6 +30,16 @@ def env_int(name, default=0):
         raise ImproperlyConfigured(f"{name} must be an integer.") from exc
 
 
+def unique_list(items):
+    unique_items = []
+    seen = set()
+    for item in items:
+        if item not in seen:
+            unique_items.append(item)
+            seen.add(item)
+    return unique_items
+
+
 DEBUG = env_bool("DJANGO_DEBUG", True)
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
@@ -38,9 +48,18 @@ if not SECRET_KEY:
     else:
         raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is false.")
 
-ALLOWED_HOSTS = env_list(
-    "DJANGO_ALLOWED_HOSTS",
-    "localhost,127.0.0.1" if DEBUG else "",
+PROJECT_ALLOWED_HOSTS = env_list(
+    "DJANGO_PROJECT_ALLOWED_HOSTS",
+    "atilahatefi.ir,www.atilahatefi.ir,.atilahatefi.ir",
+)
+ALLOWED_HOSTS = unique_list(
+    [
+        *env_list(
+            "DJANGO_ALLOWED_HOSTS",
+            "localhost,127.0.0.1" if DEBUG else "",
+        ),
+        *PROJECT_ALLOWED_HOSTS,
+    ]
 )
 if not DEBUG and not ALLOWED_HOSTS:
     raise ImproperlyConfigured("DJANGO_ALLOWED_HOSTS must be set when DJANGO_DEBUG is false.")
