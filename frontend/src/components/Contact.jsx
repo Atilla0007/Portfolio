@@ -68,7 +68,7 @@ function Contact() {
 
       setTicket(initialTicket);
       setSubmitState("success");
-      setFeedback("Your ticket was sent. I will read it from the admin panel.");
+      setFeedback("Thank you. Your message has been received.");
     } catch (error) {
       setSubmitState("error");
       setFeedback(error.message || "Your ticket could not be sent. Please try again.");
