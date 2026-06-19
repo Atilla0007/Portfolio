@@ -1,7 +1,12 @@
 const SITE_URL = "https://atilahatefi.ir";
 
+const headerLinks = [
+  { href: "/mini-projects", label: "Mini Projects", mobileVisible: true },
+];
+
 const footerLinks = [
   { href: "/", label: "Home" },
+  { href: "/mini-projects", label: "Mini Projects" },
   { href: "/why-economics", label: "Why Economics" },
   { href: "/study-and-skills", label: "Study & Skills" },
   { href: "/notes", label: "Notes" },
@@ -46,6 +51,18 @@ const pageMeta = {
     description:
       "A compact CV for Atila Hatefi covering study, results, technical learning, activities, languages, and portfolio links.",
     path: "/cv",
+  },
+  miniProjects: {
+    title: "Mini Projects | Atila Hatefi",
+    description:
+      "Working Economics and Python mini projects by Atila Hatefi, built with public data and careful explanation.",
+    path: "/mini-projects",
+  },
+  inflationProject: {
+    title: "Inflation and Purchasing Power | Atila Hatefi",
+    description:
+      "An interactive inflation and purchasing-power calculator using Python and World Bank consumer price index data.",
+    path: "/mini-projects/inflation-purchasing-power",
   },
   notFound: {
     title: "Page Not Found | Atila Hatefi",
@@ -273,6 +290,7 @@ export {
   confirmationItems,
   cvSections,
   footerLinks,
+  headerLinks,
   pageMeta,
   whyEconomics,
 };

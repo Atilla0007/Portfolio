@@ -5,6 +5,7 @@ Personal portfolio for `atilahatefi.ir`, built with Django REST Framework and Re
 ## What It Includes
 
 - React portfolio homepage with About, Certificates, Contact, and custom 404 views.
+- Reusable Mini Projects area with an interactive inflation and purchasing-power calculator.
 - Django REST API for public certificates and contact tickets.
 - Standard Django admin at `/go-to-settings/` for certificates, contact tickets, users, and future registered models.
 - Production-ready settings for PostgreSQL, Gunicorn, Nginx, HTTPS, static files, media uploads, and health checks.
@@ -13,6 +14,7 @@ Personal portfolio for `atilahatefi.ir`, built with Django REST Framework and Re
 
 ```text
 backend/                  Django project and API
+backend/portfolio/mini_projects/  Reusable Python mini-project modules
 frontend/                 React/Vite app
 deploy/gunicorn.conf.py   Gunicorn config
 deploy/nginx-tls.example.conf
@@ -40,6 +42,8 @@ Backend URLs:
 ```text
 http://127.0.0.1:8000/api/certificates/
 http://127.0.0.1:8000/api/tickets/
+http://127.0.0.1:8000/api/mini-projects/inflation/countries/
+http://127.0.0.1:8000/api/mini-projects/inflation/calculate/?country=TUR&start_year=2010&end_year=2024&amount=100
 http://127.0.0.1:8000/health/
 http://127.0.0.1:8000/go-to-settings/
 ```
@@ -59,6 +63,18 @@ http://127.0.0.1:5173/
 ```
 
 The Vite dev server proxies `/api` and `/media` to Django.
+
+Mini Projects routes:
+
+```text
+http://127.0.0.1:5173/mini-projects
+http://127.0.0.1:5173/mini-projects/inflation-purchasing-power
+```
+
+The first project uses the World Bank Indicators API v2 and indicator
+`FP.CPI.TOTL` (Consumer price index, 2010 = 100). No API key is required.
+The browser calls Django; only Django calls the fixed World Bank API base.
+Successful country and CPI responses are cached for 12 hours by default.
 
 ## Environment
 
@@ -86,6 +102,9 @@ Keep `VITE_API_BASE_URL` empty for same-origin production so the frontend calls 
 ## Data Management
 
 Certificates are public only when `is_visible=True`. Contact form submissions create contact tickets and can be reviewed in Django admin.
+
+Inflation calculator requests are validated and calculated without database writes.
+Missing CPI years are reported explicitly and are never silently substituted.
 
 Uploaded certificate files are stored under Django media storage. In production, media must be persistent across releases and backed up with the database.
 
@@ -129,6 +148,8 @@ admin, health check, and uploaded media:
 ```text
 https://atilahatefi.ir/                React portfolio served by Django
 https://atilahatefi.ir/cv              React client route served by Django
+https://atilahatefi.ir/mini-projects   Completed mini projects
+https://atilahatefi.ir/mini-projects/inflation-purchasing-power
 https://atilahatefi.ir/api/            Django API
 https://atilahatefi.ir/go-to-settings/ Django admin
 https://atilahatefi.ir/health/         Django health endpoint
@@ -164,6 +185,36 @@ python -m pip install -r ../requirements.txt
 python manage.py migrate
 python manage.py collectstatic --noinput
 python manage.py check
+```
+
+The inflation project requires no additional Python dependency and no World Bank
+API credential. Its public backend code is located at:
+
+```text
+backend/portfolio/mini_projects/inflation_purchasing_power/
+```
+
+For later cPanel updates, pull, test, rebuild React, run Django checks, and restart
+Passenger:
+
+```bash
+cd ~/Portfolio
+git pull --ff-only origin main
+
+cd frontend
+source /home/styrair/nodevenv/Portfolio/frontend/22/bin/activate
+npm ci
+npm run test --if-present
+npm run build
+
+source /home/styrair/virtualenv/Portfolio/backend/3.11/bin/activate
+cd ~/Portfolio/backend
+python -m pip install -r ../requirements.txt
+python manage.py check
+python manage.py test
+python manage.py migrate
+python manage.py collectstatic --noinput
+touch tmp/restart.txt
 ```
 
 Use these cPanel Python app environment variables, replacing the secret:

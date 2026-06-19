@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { pageMeta } from "../content/siteContent.js";
 import { normalizeBlogPost, parseArticleBody } from "../utils/blog.js";
+import { safeExternalUrl } from "../utils/safeUrl.js";
 import { setPageMeta } from "../utils/seo.js";
 import PageShell from "./PageShell.jsx";
 
@@ -163,13 +164,18 @@ function BlogPostPage({ slug }) {
           <h2 id="sources-title">Source List</h2>
           {post.sources.length > 0 ? (
             <ol>
-              {post.sources.map((source) => (
-                <li key={`${source.label}-${source.url}`}>
-                  <a href={source.url} target="_blank" rel="noopener noreferrer">
-                    {source.label}
-                  </a>
-                </li>
-              ))}
+              {post.sources.map((source) => {
+                const sourceHref = safeExternalUrl(source.url, { allowHttp: false });
+                if (!sourceHref) {
+                  return null;
+                }
+                return (
+                  <li key={`${source.label}-${sourceHref}`}>
+                    <strong>{source.label}</strong>
+                    <span className="source-url">{sourceHref}</span>
+                  </li>
+                );
+              })}
             </ol>
           ) : (
             <p>No external numerical claims or statistics used.</p>

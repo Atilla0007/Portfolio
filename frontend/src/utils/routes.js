@@ -23,6 +23,12 @@ function resolveRoute(pathname = "/") {
   if (path === "/cv") {
     return { name: "cv", path };
   }
+  if (path === "/mini-projects") {
+    return { name: "miniProjects", path };
+  }
+  if (path === "/mini-projects/inflation-purchasing-power") {
+    return { name: "inflationProject", path };
+  }
   if (path === "/notes" || path === "/blog") {
     return { name: "blog", path };
   }
