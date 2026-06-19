@@ -1,4 +1,5 @@
 import PageShell from "../PageShell.jsx";
+import ProjectCodeLink from "./ProjectCodeLink.jsx";
 import { miniProjects } from "./projectCatalog.js";
 
 function MiniProjectsIndex() {
@@ -22,12 +23,29 @@ function MiniProjectsIndex() {
               </div>
               <h2>{project.title}</h2>
               <p>{project.subtitle}</p>
+              <dl className="mini-project-card-context">
+                <div>
+                  <dt>Question</dt>
+                  <dd>{project.question}</dd>
+                </div>
+                <div>
+                  <dt>Economics</dt>
+                  <dd>{project.economicsConcept}</dd>
+                </div>
+              </dl>
               <ul aria-label={`${project.title} technologies`}>
                 {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
               </ul>
-              <a className="project-card-link" href={project.path}>
-                Open project
-              </a>
+              <div className="project-card-actions">
+                <a className="project-card-link" href={project.path}>
+                  Open project
+                </a>
+                <ProjectCodeLink
+                  href={project.codeUrl}
+                  label="View code"
+                  className="project-card-code-link"
+                />
+              </div>
             </article>
           ))}
         </div>

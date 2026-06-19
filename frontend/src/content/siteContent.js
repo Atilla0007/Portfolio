@@ -64,6 +64,12 @@ const pageMeta = {
       "An interactive inflation and purchasing-power calculator using Python and World Bank consumer price index data.",
     path: "/mini-projects/inflation-purchasing-power",
   },
+  interestInflationProject: {
+    title: "Interest, Growth, and Inflation | Atila Hatefi",
+    description:
+      "An educational calculator comparing cash, simple interest, compound growth, and inflation-adjusted purchasing power.",
+    path: "/mini-projects/interest-compound-growth-inflation",
+  },
   notFound: {
     title: "Page Not Found | Atila Hatefi",
     description: "The requested page was not found on Atila Hatefi's portfolio.",

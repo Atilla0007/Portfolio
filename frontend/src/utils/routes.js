@@ -29,6 +29,9 @@ function resolveRoute(pathname = "/") {
   if (path === "/mini-projects/inflation-purchasing-power") {
     return { name: "inflationProject", path };
   }
+  if (path === "/mini-projects/interest-compound-growth-inflation") {
+    return { name: "interestInflationProject", path };
+  }
   if (path === "/notes" || path === "/blog") {
     return { name: "blog", path };
   }

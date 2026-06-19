@@ -5,7 +5,7 @@ Personal portfolio for `atilahatefi.ir`, built with Django REST Framework and Re
 ## What It Includes
 
 - React portfolio homepage with About, Certificates, Contact, and custom 404 views.
-- Reusable Mini Projects area with an interactive inflation and purchasing-power calculator.
+- Reusable Mini Projects area with two interactive Economics + Python calculators.
 - Django REST API for public certificates and contact tickets.
 - Standard Django admin at `/go-to-settings/` for certificates, contact tickets, users, and future registered models.
 - Production-ready settings for PostgreSQL, Gunicorn, Nginx, HTTPS, static files, media uploads, and health checks.
@@ -44,6 +44,8 @@ http://127.0.0.1:8000/api/certificates/
 http://127.0.0.1:8000/api/tickets/
 http://127.0.0.1:8000/api/mini-projects/inflation/countries/
 http://127.0.0.1:8000/api/mini-projects/inflation/calculate/?country=TUR&start_year=2010&end_year=2024&amount=100
+http://127.0.0.1:8000/api/mini-projects/interest-inflation/calculate/
+http://127.0.0.1:8000/api/mini-projects/interest-inflation/historical-inflation/?country=TUR&start_year=2010&end_year=2020
 http://127.0.0.1:8000/health/
 http://127.0.0.1:8000/go-to-settings/
 ```
@@ -69,12 +71,29 @@ Mini Projects routes:
 ```text
 http://127.0.0.1:5173/mini-projects
 http://127.0.0.1:5173/mini-projects/inflation-purchasing-power
+http://127.0.0.1:5173/mini-projects/interest-compound-growth-inflation
 ```
 
 The first project uses the World Bank Indicators API v2 and indicator
 `FP.CPI.TOTL` (Consumer price index, 2010 = 100). No API key is required.
 The browser calls Django; only Django calls the fixed World Bank API base.
 Successful country and CPI responses are cached for 12 hours by default.
+
+The second project compares unchanged cash, simple interest, compound growth,
+and inflation-adjusted real value from year 0 through the selected final year:
+
+```text
+Simple interest = P x (1 + r x t)
+Compound interest = P x (1 + r / n)^(n x t)
+Inflation factor = (1 + i)^t
+Real value = Nominal value / Inflation factor
+EAR = (1 + r / n)^n - 1
+Exact real rate = ((1 + EAR) / (1 + i)) - 1
+```
+
+Manual calculations need no external source. An optional Türkiye/Iran preset uses
+World Bank indicator `FP.CPI.TOTL.ZG`, geometrically annualises available annual
+observations, lists missing years, and caches successful responses for 12 hours.
 
 ## Environment
 
@@ -105,6 +124,7 @@ Certificates are public only when `is_visible=True`. Contact form submissions cr
 
 Inflation calculator requests are validated and calculated without database writes.
 Missing CPI years are reported explicitly and are never silently substituted.
+Interest and inflation visualizer requests also remain stateless and are never stored.
 
 Uploaded certificate files are stored under Django media storage. In production, media must be persistent across releases and backed up with the database.
 
@@ -150,6 +170,7 @@ https://atilahatefi.ir/                React portfolio served by Django
 https://atilahatefi.ir/cv              React client route served by Django
 https://atilahatefi.ir/mini-projects   Completed mini projects
 https://atilahatefi.ir/mini-projects/inflation-purchasing-power
+https://atilahatefi.ir/mini-projects/interest-compound-growth-inflation
 https://atilahatefi.ir/api/            Django API
 https://atilahatefi.ir/go-to-settings/ Django admin
 https://atilahatefi.ir/health/         Django health endpoint
@@ -187,11 +208,12 @@ python manage.py collectstatic --noinput
 python manage.py check
 ```
 
-The inflation project requires no additional Python dependency and no World Bank
-API credential. Its public backend code is located at:
+The mini projects require no additional Python dependency and no World Bank API
+credential. Their public backend code is located at:
 
 ```text
 backend/portfolio/mini_projects/inflation_purchasing_power/
+backend/portfolio/mini_projects/interest_inflation_visualizer/
 ```
 
 For later cPanel updates, pull, test, rebuild React, run Django checks, and restart
