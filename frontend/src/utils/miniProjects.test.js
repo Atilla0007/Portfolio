@@ -6,6 +6,8 @@ import { headerLinks, footerLinks } from "../content/siteContent.js";
 import {
   INFLATION_CODE_URL,
   INFLATION_PROJECT_PATH,
+  INTEREST_CODE_URL,
+  INTEREST_PROJECT_PATH,
   MINI_PROJECTS_PATH,
   WORLD_BANK_CPI_URL,
   miniProjects,
@@ -51,17 +53,21 @@ describe("Mini Projects discovery", () => {
     assert.ok(footerLinks.some((link) => link.href === MINI_PROJECTS_PATH));
   });
 
-  it("publishes only the completed inflation project card", () => {
-    assert.equal(miniProjects.length, 1);
+  it("publishes exactly the two completed mini projects", () => {
+    assert.equal(miniProjects.length, 2);
     assert.equal(miniProjects[0].status, "Complete");
     assert.equal(miniProjects[0].path, INFLATION_PROJECT_PATH);
     assert.match(miniProjects[0].title, /money really worth/i);
+    assert.equal(miniProjects[1].status, "Complete");
+    assert.equal(miniProjects[1].path, INTEREST_PROJECT_PATH);
+    assert.match(miniProjects[1].title, /interest, growth, and inflation/i);
   });
 
   it("adds project routes without changing homepage sections", () => {
     assert.deepEqual(HOME_SECTIONS, ["about", "certificates", "contact"]);
     assert.equal(resolveRoute(MINI_PROJECTS_PATH).name, "miniProjects");
     assert.equal(resolveRoute(INFLATION_PROJECT_PATH).name, "inflationProject");
+    assert.equal(resolveRoute(INTEREST_PROJECT_PATH).name, "interestInflationProject");
   });
 });
 
@@ -139,6 +145,7 @@ describe("Project source, code, and chart accessibility", () => {
     const options = { allowHttp: false, baseUrl: "https://atilahatefi.ir" };
     assert.equal(safeExternalUrl(WORLD_BANK_CPI_URL, options), WORLD_BANK_CPI_URL);
     assert.equal(safeExternalUrl(INFLATION_CODE_URL, options), INFLATION_CODE_URL);
+    assert.equal(safeExternalUrl(INTEREST_CODE_URL, options), INTEREST_CODE_URL);
   });
 
   it("creates a useful chart text alternative", () => {

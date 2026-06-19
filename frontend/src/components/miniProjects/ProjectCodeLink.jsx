@@ -1,6 +1,6 @@
 import { safeExternalUrl } from "../../utils/safeUrl.js";
 
-function ProjectCodeLink({ href }) {
+function ProjectCodeLink({ href, label = "View Python Code on GitHub", className = "" }) {
   const safeHref = safeExternalUrl(href, { allowHttp: false });
   if (!safeHref) {
     return null;
@@ -8,12 +8,12 @@ function ProjectCodeLink({ href }) {
 
   return (
     <a
-      className="project-code-link"
+      className={`project-code-link ${className}`.trim()}
       href={safeHref}
       target="_blank"
       rel="noopener noreferrer"
     >
-      View Python Code on GitHub
+      {label}
     </a>
   );
 }

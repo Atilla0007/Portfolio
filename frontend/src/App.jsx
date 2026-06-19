@@ -14,6 +14,7 @@ import Hero from "./components/Hero.jsx";
 import NotFound, { notFoundNavItems } from "./components/NotFound.jsx";
 import WhyEconomicsPage from "./components/WhyEconomicsPage.jsx";
 import InflationPurchasingPowerPage from "./components/miniProjects/InflationPurchasingPowerPage.jsx";
+import InterestInflationPage from "./components/miniProjects/InterestInflationPage.jsx";
 import MiniProjectsIndex from "./components/miniProjects/MiniProjectsIndex.jsx";
 import { pageMeta } from "./content/siteContent.js";
 import { resolveRoute } from "./utils/routes.js";
@@ -71,6 +72,8 @@ function renderRoute(route, path) {
       return <MiniProjectsIndex />;
     case "inflationProject":
       return <InflationPurchasingPowerPage />;
+    case "interestInflationProject":
+      return <InterestInflationPage />;
     case "blog":
       return <BlogIndexPage />;
     case "blogPost":

@@ -1,9 +1,9 @@
 import PageShell from "../PageShell.jsx";
 
-function MiniProjectLayout({ title, subtitle, children }) {
+function MiniProjectLayout({ number = "01", title, subtitle, children }) {
   return (
     <PageShell
-      eyebrow="Mini Project 01 / Economics + Python"
+      eyebrow={`Mini Project ${number} / Economics + Python`}
       title={title}
       intro={subtitle}
       actions={
