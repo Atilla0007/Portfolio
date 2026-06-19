@@ -187,8 +187,12 @@ if not DEBUG and not CSRF_TRUSTED_ORIGINS:
         "DJANGO_CSRF_TRUSTED_ORIGINS must be set when DJANGO_DEBUG is false."
     )
 
+# bearer:disable python_django_insecure_cookie_settings
+# Production defaults both cookies to secure; the override supports local HTTP development.
 SESSION_COOKIE_SECURE = env_bool("DJANGO_SESSION_COOKIE_SECURE", not DEBUG)
+# bearer:disable python_django_insecure_cookie_settings
 CSRF_COOKIE_SECURE = env_bool("DJANGO_CSRF_COOKIE_SECURE", not DEBUG)
+# bearer:enable python_django_insecure_cookie_settings
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = os.environ.get("DJANGO_SESSION_COOKIE_SAMESITE", "Lax")
 CSRF_COOKIE_SAMESITE = os.environ.get("DJANGO_CSRF_COOKIE_SAMESITE", "Lax")
@@ -253,6 +257,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
     "DEFAULT_THROTTLE_RATES": {
+        "mini_projects": "60/hour",
         "tickets": "5/hour",
     },
 }

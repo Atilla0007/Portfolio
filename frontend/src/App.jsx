@@ -13,6 +13,8 @@ import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import NotFound, { notFoundNavItems } from "./components/NotFound.jsx";
 import WhyEconomicsPage from "./components/WhyEconomicsPage.jsx";
+import InflationPurchasingPowerPage from "./components/miniProjects/InflationPurchasingPowerPage.jsx";
+import MiniProjectsIndex from "./components/miniProjects/MiniProjectsIndex.jsx";
 import { pageMeta } from "./content/siteContent.js";
 import { resolveRoute } from "./utils/routes.js";
 import { setPageMeta } from "./utils/seo.js";
@@ -65,6 +67,10 @@ function renderRoute(route, path) {
       return <ActivitiesPage />;
     case "cv":
       return <CVPage />;
+    case "miniProjects":
+      return <MiniProjectsIndex />;
+    case "inflationProject":
+      return <InflationPurchasingPowerPage />;
     case "blog":
       return <BlogIndexPage />;
     case "blogPost":

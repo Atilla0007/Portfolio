@@ -30,6 +30,7 @@ function About() {
         </div>
 
         <div className="about-links" aria-label="Personal portfolio links">
+          <a className="text-button" href="/mini-projects">Explore Mini Projects</a>
           <a className="text-button" href="/why-economics">Read why Economics matters to me</a>
           <a className="text-button" href="/study-and-skills">View study & skills</a>
         </div>
