@@ -133,7 +133,7 @@ const academicProfileGroups = [
     items: [
       ["High-school field", "Mathematics and Physics / Science"],
       ["High-school GPA", "17.97 / 20"],
-      ["School name", "Preferred English wording to be confirmed"],
+      ["School name", "Rahpad"],
     ],
   },
   {
@@ -141,7 +141,7 @@ const academicProfileGroups = [
     items: [
       ["TR-YOS", "446.80 / 500"],
       ["Previous TR-YOS attempt", "438 / 500"],
-      ["SAT", "On its way"],
+      ["SAT", "1260 (750 Math)"],
       ["TOEFL iBT", "5/6"],
     ],
   },
@@ -234,7 +234,7 @@ const cvSections = [
     items: [
       "High-school field: Mathematics and Physics / Science",
       "High-school GPA: 17.97 / 20",
-      "School name in English: to confirm",
+      "School name: Rahpad",
     ],
   },
   {
@@ -242,7 +242,7 @@ const cvSections = [
     items: [
       "TR-YOS: 446.80 / 500",
       "Previous TR-YOS attempt: 438 / 500",
-      "SAT: on its way",
+      "SAT: 1260 (750 Math)",
       "TOEFL iBT: 5/6",
     ],
   },
@@ -284,7 +284,6 @@ const cvSections = [
 ];
 
 const confirmationItems = [
-  "Preferred English wording of school name",
   "Whether certificate scans have been redacted",
   "Whether all sports dates and placements should be displayed publicly",
 ];
